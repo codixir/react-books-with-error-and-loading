@@ -1,0 +1,11 @@
+.App {
+  text-align: center;
+  padding: 10%;
+}
+
+.create-form-container,
+.books-table-container  {
+  margin: 3%;
+  padding: 5%;
+  border: 1px solid #ccc;
+}
