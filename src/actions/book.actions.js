@@ -10,6 +10,7 @@ import { ADD_BOOK,
         FETCH_BOOKS_LOADING
     } from './types';
 import axios from 'axios';
+import { history } from '../index';
 
 const url = 'http://localhost:8000/books';
 
@@ -43,10 +44,11 @@ export const createBook = (book) => {
                 .then(response => {                
                     const id = response.data;
 
-                    return axios.get(`${url}/${id}`).then(response => {
+                    return axios.get(`${url + 'df'}/${id}`).then(response => {
                         isLoading = false;
                         dispatch(createBookLoading(isLoading));     
                         dispatch(createBookSuccess(response.data));
+                        history.push('/');
                     }).catch((error) => {
                         isLoading = false;
                         dispatch(createBookLoading(isLoading));     
@@ -59,7 +61,7 @@ export const createBook = (book) => {
     }
 };
 
-export const createBookSuccess = (book) => {
+export const createBookSuccess = (book) => {    
     return {
         type: ADD_BOOK,
         payload: {
@@ -75,7 +77,6 @@ export const createBookError = (error) => {
     const errorPayload = {
         message: error.response.data.message,
         status: error.response.status,
-        scope: 'create-book',
     };
 
     return {
@@ -95,7 +96,6 @@ export const updateBookError = (error) => {
     const errorPayload = {
         message: error.response.data.message ? error.response.data.message : error.response.data,
         status: error.response.status,
-        scope: 'create-book',
     };
 
     return {
@@ -124,6 +124,7 @@ export const updateBook = (dispatch, data) => {
             return axios.get(`${url}/${id}`).
                 then(response => {
                     dispatch(updateBookSuccess(response.data));
+                    history.push('/');
                 }).catch(error => {
                     dispatch(updateBookError(error));
                 })
@@ -135,7 +136,7 @@ export const updateBook = (dispatch, data) => {
 
 export const deleteBook = (id) => {
     return (dispatch) => {
-        return axios.delete(`${url}/${id}`).then(() => {
+        return axios.delete(`${url + 'df'}/${id}`).then(() => {
             dispatch(deleteBookSuccess(id));
         }).catch(error => {
             dispatch(deleteBookError(error));
@@ -152,12 +153,10 @@ export const deleteBookSuccess = (id) => {
     };
 };
 
-
 export const deleteBookError = (error) => {
     const errorPayload = {
         message: error.response.data.message,
-        status: error.response.status,
-        scope: 'delete-book',
+        status: error.response.status,        
     };
 
     return {
@@ -176,8 +175,7 @@ export const fetchBooksSuccess = (books) => {
 const fetchAllBooksErrors = (error) => {
     const errorPayload = {
         message: error.response.data,
-        status: error.response.status,
-        scope: 'get-books',
+        status: error.response.status,        
     };
 
     return {
@@ -210,7 +208,7 @@ const normalizeResponse = (data) => {
 };
 
 export const fetchAllBooks = () => {
-    let isLoading = true;
+    let isLoading = true;    
 
     return (dispatch) => {
         if (isLoading) {

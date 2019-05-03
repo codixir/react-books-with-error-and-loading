@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { createBook } from '../actions/book.actions';
 import { connect } from 'react-redux';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import './CreateBook.css';
 
 class CreateBook extends Component {
     constructor(props) {
@@ -12,7 +14,7 @@ class CreateBook extends Component {
             author: '',
             year: '',
             errors: null,
-        };        
+        }; 
     }
 
     handleSubmit(e) {
@@ -38,26 +40,27 @@ class CreateBook extends Component {
         });
     }
 
-    componentWillReceiveProps(nextProps) {        
-        if (nextProps.book) {
+    componentWillMount() {
+        if (this.props.location && this.props.location.state && this.props.location.state.book) {
+            const book = this.props.location.state.book;
+
             this.setState({
-                id: nextProps.book.id,
-                title: nextProps.book.title,
-                author: nextProps.book.author,
-                year: nextProps.book.year,
-            })
-        }
-                         
-        if (nextProps.errors) {
-            this.setState({
-                errors: nextProps.errors,
-            });
-        }
+                id: book.id,
+                title: book.title,
+                author: book.author,
+                year: book.year,
+                errors: null,
+            });    
+        }         
     }
 
     render() {
         return (
             <div>
+                <div className="btn-container clearfix">
+                     <Link to="/" className="btn btn-home btn-primary">Home</Link>
+                </div>
+                
                 {this.props.errors && this.props.errors.message ? <div className="alert alert-danger">{this.props.errors.message}</div> : ''}
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <div className="form-group">
@@ -103,10 +106,9 @@ class CreateBook extends Component {
 }
 
 
-const mapStateToProps = (state) => {    
-    const scope = state.booksData.errors ? state.booksData.errors.scope : '';
+const mapStateToProps = (state) => {        
     return {
-        errors: (scope === 'create-book') ? state.booksData.errors: null,
+        errors: state.booksData.errors,
         books: state.booksData.books,
         isLoading: state.booksData.isLoading,
     }

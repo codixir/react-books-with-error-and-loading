@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import Books from './containers/Books';
 import CreateBook from './containers/CreateBook';
+import { history } from './index';
 
 class App extends Component {
   constructor(props) {
@@ -19,29 +20,33 @@ class App extends Component {
 
   onEdit(book) {
     this.setState({book: book});
+    history.push({
+      pathname: `/edit/${book.id}`,
+      state: { 
+        book: book
+       }
+    });    
   }
 
   render() {
       return (
         <Router >      
-          <div className="App">
-   
-              <Link to="/create/" className="btn btn-primary">Create</Link>
-
-              <Route path="/" exact component={Books} />
-              <Route path="/create/" component={CreateBook} />
-
-
-            {/* <div className="create-form-container">
-              <CreateBook 
-                book={this.state.book}
+          <div className="App">              
+              <Route path="/" 
+                  exact 
+                  render={ (props) => <Books { ...props } 
+                  onEdit={this.onEdit}  />} 
+                />
+              <Route path="/create/"                   
+                  render={ (props) => <CreateBook { ...props } 
+                    book={this.state.book}                        
+                  />} 
               />
-            </div>
-            <div className="books-table-container">
-              <Books 
-                onEdit={this.onEdit}    
-              />
-            </div> */}
+              <Route path="/edit/:id"                   
+                  render={ (props) => <CreateBook { ...props } 
+                    book={this.state.book}                        
+                  />} 
+                />
           </div>
         </Router>
       );
