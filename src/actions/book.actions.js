@@ -44,7 +44,7 @@ export const createBook = (book) => {
                 .then(response => {                
                     const id = response.data;
 
-                    return axios.get(`${url + 'df'}/${id}`).then(response => {
+                    return axios.get(`${url}/${id}`).then(response => {
                         isLoading = false;
                         dispatch(createBookLoading(isLoading));     
                         dispatch(createBookSuccess(response.data));
@@ -136,7 +136,7 @@ export const updateBook = (dispatch, data) => {
 
 export const deleteBook = (id) => {
     return (dispatch) => {
-        return axios.delete(`${url + 'df'}/${id}`).then(() => {
+        return axios.delete(`${url}/${id}`).then(() => {
             dispatch(deleteBookSuccess(id));
         }).catch(error => {
             dispatch(deleteBookError(error));
